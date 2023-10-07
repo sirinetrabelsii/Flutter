@@ -28,6 +28,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   shared_preferences: ^2.2.1
+  http:
+  intl: ^0.17.0
   flutter:
     sdk: flutter
 
@@ -64,6 +66,9 @@ flutter:
     - images/image.png
     - images/meteo.png
     - images/params.png
+    - images/cloudy.png
+    - images/rainy.png
+    - images/sunny.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
