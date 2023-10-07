@@ -56,41 +56,46 @@ class _MeteoDetailsPageState extends State<meteoDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Page Meteo Details ${widget.ville}')),
-        body: ListView.builder(
-          itemCount: (meteoData == null ? 0 : meteoData['list'].length),
-          itemBuilder: (context, index) {
-            final weatherData = meteoData['list'][index];
-            final temperature = weatherData['main']['temp'];
-            final date =
-                DateTime.fromMillisecondsSinceEpoch(weatherData['dt'] * 1000);
+        body: meteoData == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: (meteoData == null ? 0 : meteoData['list'].length),
+                itemBuilder: (context, index) {
+                  final weatherData = meteoData['list'][index];
+                  final temperature = weatherData['main']['temp'];
+                  final date = DateTime.fromMillisecondsSinceEpoch(
+                      weatherData['dt'] * 1000);
 
-            return Card(
-              color: Colors.blue,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            getWeatherImage(weatherData['weather'][0]['main'])),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(formatDate(date)), // Afficher la date locale
-                          Text(
-                              '${date.hour}:${date.minute} | ${weatherData['weather'][0]['description']}'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(
-                      '${temperature}°C'), // Afficher la température avec 2 décimales
-                ],
-              ),
-            );
-          },
-        ));
+                  return Card(
+                    color: Colors.blue,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage(getWeatherImage(
+                                  weatherData['weather'][0]['main'])),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(formatDate(
+                                    date)), // Afficher la date locale
+                                Text(
+                                    '${date.hour}:${date.minute} | ${weatherData['weather'][0]['description']}'),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Text(
+                            '${temperature}°C'), // Afficher la température avec 2 décimales
+                      ],
+                    ),
+                  );
+                },
+              ));
   }
 }
