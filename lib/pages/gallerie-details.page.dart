@@ -14,38 +14,45 @@ class gallerieDetailsPage extends StatefulWidget {
 class _GallerieDetailsPageState extends State<gallerieDetailsPage> {
   @override
   var gallerieData;
+  List<dynamic> hits = [];
   int currentPage = 1;
   int size = 10;
   int totalPages = 0;
-  List<dynamic> hits = [];
-  void initState() {
-    super.initState();
-    getGallerieData(widget.image);
-  }
-
-  void getGallerieData(String image) {
-    print("image " + image);
-    String url =
-        "https://pixabay.com/api/?key=40009359-89bd7d67403225d01ba33a825&q=$image&page=$currentPage&per_page=$size";
-    http.get(Uri.parse(url)).then((resp) {
-      setState(() {
-        this.gallerieData = json.decode(resp.body);
-        hits = gallerieData['hits'];
-        print(hits);
-      });
-      print(this.gallerieData);
-    }).catchError((err) {
-      print(err);
-    });
-  }
-
   ScrollController _scrollController = ScrollController();
-  @override
   void dispose() {
     super.dispose();
     _scrollController.dispose();
   }
 
+  void initState() {
+    super.initState();
+    getGallerieData(widget.image);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (currentPage < totalPages) {
+          currentPage++;
+          getGallerieData(widget.image);
+        }
+      }
+    });
+  }
+
+  void getGallerieData(String keywords) {
+    String url =
+        "https://pixabay.com/api/?key=40009359-89bd7d67403225d01ba33a825&q=$keywords&page=$currentPage&per_page=$size";
+    http.get(Uri.parse(url)).then((response) {
+      setState(() {
+        gallerieData = json.decode(response.body);
+        hits.addAll(gallerieData['hits']);
+        totalPages = (gallerieData['totalHits'] / size).ceil();
+      });
+    }).catchError((err) {
+      print('Error $err');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
